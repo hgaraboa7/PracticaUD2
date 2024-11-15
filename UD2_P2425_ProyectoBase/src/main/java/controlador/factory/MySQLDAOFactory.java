@@ -3,8 +3,11 @@ package controlador.factory;
 import java.sql.Connection;
 import java.sql.SQLException;
 import controlador.pool.BasicConnectionPool;
+import modelo.dao.ProductoDAO;
 
 public class MySQLDAOFactory extends DAOFactory {
+
+   
 
     final static String user = "root";
     final static String password = "root";
@@ -44,5 +47,8 @@ public class MySQLDAOFactory extends DAOFactory {
         bcp.shutdown();
     }
    //implementamos los métodos abstractos
-
+ @Override
+    public ProductoDAO getProductoDAO() {
+      return new ProductoDAO();
+    }
 }

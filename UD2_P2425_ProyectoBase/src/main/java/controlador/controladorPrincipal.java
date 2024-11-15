@@ -5,28 +5,56 @@
 package controlador;
 
 import controlador.factory.DAOFactory;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
+import modelo.dao.FacturaDAO;
+import modelo.dao.ProductoDAO;
 import vista.Principal;
 
 /**
  *
  * @author Acceso a datos
  */
+
+
 public class controladorPrincipal {
     public static DAOFactory mySQLFactory;
     //declara los objetos DAO
     
     public static Principal ventana = new Principal();
+    
+    static DefaultComboBoxModel modelocomboEmpleado=new DefaultComboBoxModel();
+    
+    static DefaultComboBoxModel modelocomboProducto=new DefaultComboBoxModel();
+    
+    static DefaultTableModel modelotabla= new DefaultTableModel();
+    
+    static ProductoDAO producto;
+    
+    static FacturaDAO factura;
 
     public static void iniciar() {
         ventana.setVisible(true);
         ventana.setLocationRelativeTo(null);
+        
+        ventana.getCmbEmpleado().setModel(modelocomboEmpleado);
+        
+        ventana.getCmbProducto().setModel(modelocomboProducto);
+        
+        modelotabla=(DefaultTableModel) ventana.getTblProductos().getModel();
+        
     }
 
     public static void iniciaFactory() {
         mySQLFactory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
         //inicializa los objetos DAO
+        
+        producto=mySQLFactory.getProductoDAO();
+        
         
     }
 
@@ -37,5 +65,44 @@ public class controladorPrincipal {
             Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    public static void cargarcomboProducto()
+    {
+        Connection conn=null;
+        
+        try {
+            conn=mySQLFactory.getConnection();
+            
+            producto.cargarcombo(conn,modelocomboProducto );
+            
+            
+        }catch (SQLException ex1) {
+            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
+        } catch (Exception ex) {
+            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            mySQLFactory.releaseConnection(conn);
+        }
+        
+        
+    }
+    public static void cargarTabla() {
+        Connection conn=null;
+        
+        try {
+            conn=mySQLFactory.getConnection();
+            
+            factura.cargartabla(conn );
+            
+            
+        } catch (Exception ex) {
+            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                
+        
+        
+        
+    }
+    
+    
 }

@@ -1,6 +1,7 @@
 package controlador.factory;
 
 import java.sql.Connection;
+import modelo.dao.EmpleadoDAO;
 import modelo.dao.ProductoDAO;
 
 
@@ -32,4 +33,6 @@ public abstract class DAOFactory {
 	}
         //Definimos los métodos abstractos para poder obtener los DAO
         public abstract ProductoDAO getProductoDAO();
+        
+        public abstract EmpleadoDAO getEmpleadoDAO();
 }

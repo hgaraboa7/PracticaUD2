@@ -12,10 +12,7 @@ import java.sql.Connection;
  */
 public class FacturaDAO {
 
-    public void cargartabla(Connection conn) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
+   
     
     
 }

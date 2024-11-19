@@ -181,6 +181,8 @@ public class controladorPrincipal {
      public static void comprobarStock() {
   
           Connection conn = null;
+          
+          boolean comp;
          
           if(modelotabla.getRowCount()==0){
             JOptionPane.showMessageDialog(null, "No hay productos que facturar");
@@ -190,7 +192,17 @@ public class controladorPrincipal {
         try {
             conn = mySQLFactory.getConnection();
 
-            producto.añadirproducto(conn, modelotabla, String.valueOf(ventana.getCmbProducto().getSelectedItem()), (int) ventana.getSpCantidad().getValue() );
+           comp=producto.comprobarStock(conn, modelotabla);
+           
+           
+            //
+          //realizar  factura y updates
+          //
+           if(comp){
+               System.out.println("funciona suficiente");
+           }else{  
+               System.out.println("funciona insuficiente");
+           }
 
         } catch (SQLException ex1) {
             Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);

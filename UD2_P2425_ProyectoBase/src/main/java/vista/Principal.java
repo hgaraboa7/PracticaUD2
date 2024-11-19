@@ -89,6 +89,11 @@ public class Principal extends javax.swing.JFrame {
         jLabel2.setText("Cliente");
 
         txtIdCliente.setText("C99");
+        txtIdCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIdClienteActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Fecha");
 
@@ -275,6 +280,10 @@ public class Principal extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_btnFacturarActionPerformed
+
+    private void txtIdClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdClienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIdClienteActionPerformed
 
     /**
      * @param args the command line arguments

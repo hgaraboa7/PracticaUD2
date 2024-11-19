@@ -5,6 +5,7 @@
 package modelo.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,7 +47,6 @@ public class ProductoDAO {
 
     public boolean comprobarTabla(DefaultTableModel modelotabla, Producto producto, int cantidad) {
 
-        
         //revisar este metodo no me gusta
         boolean comp = false;
 
@@ -62,7 +62,7 @@ public class ProductoDAO {
 
                 return comp = true;
 
-            } 
+            }
 
         }
 
@@ -71,79 +71,84 @@ public class ProductoDAO {
     }
 
     public void eliminarProducto(DefaultTableModel modelotabla, Producto producto, int cantidad) {
-    
-        
+
         //revisar este metodo no me gusta
-        
-        
-         for (int i = 0; i < modelotabla.getRowCount(); i++) {
+        for (int i = 0; i < modelotabla.getRowCount(); i++) {
 
             String nombretabla = (String) modelotabla.getValueAt(i, 0);
 
             if (nombretabla == producto.getNomproducto()) {
-                
-                 modelotabla.setValueAt(((int) modelotabla.getValueAt(i, 1) - cantidad), i, 1);
+
+                modelotabla.setValueAt(((int) modelotabla.getValueAt(i, 1) - cantidad), i, 1);
 
                 modelotabla.setValueAt(((int) modelotabla.getValueAt(i, 1) * producto.getPrecio()), i, 2);
-               
-                if((int) modelotabla.getValueAt(i, 1)<0){
-                    
-                    //al hacer con transacciones aqui hacer rollback
-                    
-                }
-                if((int) modelotabla.getValueAt(i, 2)<0){
-                    
-                    //al hacer con transacciones aqui hacer rollback
-                    
-                }
-                
-                
+
+                // if((int) modelotabla.getValueAt(i, 1)<0){
+                //al hacer con transacciones aqui hacer rollback
+                // }
+                //   if((int) modelotabla.getValueAt(i, 2)<0){
+                //al hacer con transacciones aqui hacer rollback
+                // }
             }
-            
-            
-        
-        
-        
-    }
+
+        }
     }
 
     public void calcularTotal(DefaultTableModel modelotabla, JTextField txtTotal) {
-    
-        double precio=0.0;
-        
-         for (int i = 0; i < modelotabla.getRowCount(); i++) {
 
-             precio+=(double)modelotabla.getValueAt(i, 2);
-          
-            }
-        
+        double precio = 0.0;
+
+        for (int i = 0; i < modelotabla.getRowCount(); i++) {
+
+            precio += (double) modelotabla.getValueAt(i, 2);
+
+        }
+
         txtTotal.setText(String.valueOf(precio));
-        
+
     }
 
     public void añadirproducto(Connection conn, DefaultTableModel modelotabla, String nombreProducto, int cantidad) {
-   
+
         //con transaccion y stcok
-    
-    
     }
 
-    public void comprobarStock(Connection conn, DefaultTableModel modelotabla) {
-   
-     //   String consulta="Select stock from productos where idproducto "
-        
-        
+    public boolean comprobarStock(Connection conn, DefaultTableModel modelotabla) throws SQLException {
 
-
+        //revisar para ver si interesa comprobar en cada insercion o al final
+        
+        String consulta = "Select stock from productos where nomproducto like ?";
+        PreparedStatement sentencia = conn.prepareStatement(consulta);
+        boolean comp = false;
+        ResultSet rs;
+        String nomproducto;
+        int cantidadproducto;
+        int stock = 0;
+        for (int i = 0; i < modelotabla.getRowCount(); i++) {
+            nomproducto = String.valueOf(modelotabla.getValueAt(i, 0));
+            cantidadproducto = (int) modelotabla.getValueAt(i, 1);
+            sentencia.setString(1, nomproducto);
+            rs = sentencia.executeQuery();
+            if (rs.next()) {
+                stock = rs.getInt(1);
+                if (cantidadproducto <= stock) {
+                    comp = true;
+                } else {
+                    comp = false;
+                }
+            }
+        }
+        return comp;
     }
 
-   
-
-
-
-
-    
-
-    
-
+    public void actualizarStock(Connection conn, DefaultTableModel modelotabla) throws SQLException {
+         String consulta="UPDATE productos SET stock = ? WHERE nomproductos like ?";
+         PreparedStatement sentencia=conn.prepareStatement(consulta);
+         ResultSet rs;
+         for(int i=0;i<modelotabla.getRowCount();i++){
+             sentencia.setInt(1, (int)modelotabla.getValueAt(i, 1));
+         }
+         
+         
+    }
 }

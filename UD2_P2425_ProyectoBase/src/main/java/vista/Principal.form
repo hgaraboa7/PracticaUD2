@@ -223,6 +223,9 @@
               </Table>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="tblProductosPropertyChange"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -278,13 +281,16 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtTotal">
       <Properties>
-        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="editable" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnFacturar">
       <Properties>
         <Property name="text" type="java.lang.String" value="Facturar"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFacturarActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import modelo.vo.Producto;
 
@@ -59,13 +60,9 @@ public class ProductoDAO {
 
                 modelotabla.setValueAt(((int) modelotabla.getValueAt(i, 1) * producto.getPrecio()), i, 2);
 
-                comp = true;
+                return comp = true;
 
-            } else if (nombretabla != producto.getNomproducto()) {
-
-                comp = false;
-
-            }
+            } 
 
         }
 
@@ -88,13 +85,65 @@ public class ProductoDAO {
                  modelotabla.setValueAt(((int) modelotabla.getValueAt(i, 1) - cantidad), i, 1);
 
                 modelotabla.setValueAt(((int) modelotabla.getValueAt(i, 1) * producto.getPrecio()), i, 2);
+               
+                if((int) modelotabla.getValueAt(i, 1)<0){
+                    
+                    //al hacer con transacciones aqui hacer rollback
+                    
+                }
+                if((int) modelotabla.getValueAt(i, 2)<0){
+                    
+                    //al hacer con transacciones aqui hacer rollback
+                    
+                }
                 
                 
             }
+            
+            
         
         
         
     }
     }
+
+    public void calcularTotal(DefaultTableModel modelotabla, JTextField txtTotal) {
+    
+        double precio=0.0;
+        
+         for (int i = 0; i < modelotabla.getRowCount(); i++) {
+
+             precio+=(double)modelotabla.getValueAt(i, 2);
+          
+            }
+        
+        txtTotal.setText(String.valueOf(precio));
+        
+    }
+
+    public void añadirproducto(Connection conn, DefaultTableModel modelotabla, String nombreProducto, int cantidad) {
+   
+        //con transaccion y stcok
+    
+    
+    }
+
+    public void comprobarStock(Connection conn, DefaultTableModel modelotabla) {
+   
+     //   String consulta="Select stock from productos where idproducto "
+        
+        
+
+
+    }
+
+   
+
+
+
+
+    
+
+    
 
 }

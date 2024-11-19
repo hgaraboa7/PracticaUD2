@@ -104,6 +104,11 @@ public class Principal extends javax.swing.JFrame {
                 "Producto", "Cantidad", "Precio"
             }
         ));
+        tblProductos.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                tblProductosPropertyChange(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblProductos);
 
         jLabel6.setText("Producto");
@@ -128,9 +133,14 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel8.setText("total");
 
-        txtTotal.setEnabled(false);
+        txtTotal.setEditable(false);
 
         btnFacturar.setText("Facturar");
+        btnFacturar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFacturarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -237,14 +247,34 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnRestarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestarActionPerformed
         controladorPrincipal.listaretirarproducto();
+        controladorPrincipal.sumartotal();
     }//GEN-LAST:event_btnRestarActionPerformed
 
     private void btnSumarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSumarActionPerformed
         
+       // controladorPrincipal.añadirProductoStock();
+        
         controladorPrincipal.listaañadirproducto();
+                controladorPrincipal.sumartotal();
+
         
         
     }//GEN-LAST:event_btnSumarActionPerformed
+
+    private void tblProductosPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tblProductosPropertyChange
+       
+        
+       // controladorPrincipal.sumartotal();
+       //no va 
+        
+    }//GEN-LAST:event_tblProductosPropertyChange
+
+    private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
+        
+        controladorPrincipal.comprobarStock();
+        
+        
+    }//GEN-LAST:event_btnFacturarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -318,6 +348,14 @@ public class Principal extends javax.swing.JFrame {
 
     public JSpinner getSpCantidad() {
         return spCantidad;
+    }
+
+    public JTextField getTxtTotal() {
+        return txtTotal;
+    }
+
+    public void setTxtTotal(JTextField txtTotal) {
+        this.txtTotal = txtTotal;
     }
 
 

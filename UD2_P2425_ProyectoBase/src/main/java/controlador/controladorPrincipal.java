@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.dao.EmpleadoDAO;
 import modelo.dao.FacturaDAO;
@@ -39,6 +40,11 @@ public class controladorPrincipal {
     static EmpleadoDAO empleado;
 
     static FacturaDAO factura;
+
+   
+   
+            
+             
 
     public static void iniciar() {
         ventana.setVisible(true);
@@ -88,19 +94,6 @@ public class controladorPrincipal {
 
     }
 
-    public static void cargarTabla() {
-        Connection conn = null;
-
-        try {
-            conn = mySQLFactory.getConnection();
-
-            factura.cargartabla(conn);
-
-        } catch (Exception ex) {
-            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
 
     public static void cargarcomboEmpleado() {
 
@@ -122,6 +115,11 @@ public class controladorPrincipal {
     }
 
     public static void listaañadirproducto() {
+        
+        if((int) ventana.getSpCantidad().getValue()==0){
+            JOptionPane.showMessageDialog(null, "Faltan datos");
+            return;
+        }
 
         if (!producto.comprobarTabla(modelotabla, (Producto) ventana.getCmbProducto().getSelectedItem(), (int) ventana.getSpCantidad().getValue())) {
 
@@ -132,9 +130,79 @@ public class controladorPrincipal {
     }
 
     public static void listaretirarproducto() {
-        if (producto.comprobarTabla(modelotabla, (Producto) ventana.getCmbProducto().getSelectedItem(), (int) ventana.getSpCantidad().getValue())) {
+         if((int) ventana.getSpCantidad().getValue()==0){
+            JOptionPane.showMessageDialog(null, "Faltan datos");
+            return;
+        }
+         
+        
+        
             producto.eliminarProducto(modelotabla,(Producto) ventana.getCmbProducto().getSelectedItem(), (int) ventana.getSpCantidad().getValue());
+        
+    }
+
+    public static void sumartotal() {
+        
+         if(((int) ventana.getSpCantidad().getValue())==0){
+           
+            return;
+        }
+        
+        producto.calcularTotal(modelotabla, ventana.getTxtTotal());
+        
+        
+    }
+
+    public static void añadirProductoStock() {
+         Connection conn = null;
+         
+          if((int) ventana.getSpCantidad().getValue()==0){
+            JOptionPane.showMessageDialog(null, "Faltan datos");
+            return;
         }
 
+        try {
+            conn = mySQLFactory.getConnection();
+
+            producto.añadirproducto(conn, modelotabla, String.valueOf(ventana.getCmbProducto().getSelectedItem()), (int) ventana.getSpCantidad().getValue() );
+
+        } catch (SQLException ex1) {
+            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
+        } catch (Exception ex) {
+            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            mySQLFactory.releaseConnection(conn);
+        }
+        
+        
+ 
     }
+    
+     public static void comprobarStock() {
+  
+          Connection conn = null;
+         
+          if(modelotabla.getRowCount()==0){
+            JOptionPane.showMessageDialog(null, "No hay productos que facturar");
+            return;
+        }
+
+        try {
+            conn = mySQLFactory.getConnection();
+
+            producto.añadirproducto(conn, modelotabla, String.valueOf(ventana.getCmbProducto().getSelectedItem()), (int) ventana.getSpCantidad().getValue() );
+
+        } catch (SQLException ex1) {
+            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
+        } catch (Exception ex) {
+            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            mySQLFactory.releaseConnection(conn);
+        }
+        
+         
+         
+         
+     }
+    
 }

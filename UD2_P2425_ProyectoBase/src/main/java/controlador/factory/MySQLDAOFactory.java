@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import controlador.pool.BasicConnectionPool;
 import modelo.dao.ClienteDAO;
 import modelo.dao.EmpleadoDAO;
+import modelo.dao.FacturaDAO;
 import modelo.dao.ProductoDAO;
 
 public class MySQLDAOFactory extends DAOFactory {
@@ -62,6 +63,11 @@ public class MySQLDAOFactory extends DAOFactory {
     @Override
     public ClienteDAO getClienteDAO() {
     return new ClienteDAO();   
+    }
+
+    @Override
+    public FacturaDAO getFacturaDAO() {
+        return new FacturaDAO();
     }
     
     

@@ -280,8 +280,12 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_tblProductosPropertyChange
 
     private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
+         
         
         controladorPrincipal.comprobarStock();
+        controladorPrincipal.cargarcomboEmpleado();
+        //controladorPrincipal.facturar();
+        
       //  controladorPrincipal.
         
     }//GEN-LAST:event_btnFacturarActionPerformed
@@ -291,7 +295,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtIdClienteActionPerformed
 
     private void txtIdClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtIdClienteFocusLost
-        controladorPrincipal.mostrarCliente();
+        //controladorPrincipal.mostrarCliente();
         
         
         

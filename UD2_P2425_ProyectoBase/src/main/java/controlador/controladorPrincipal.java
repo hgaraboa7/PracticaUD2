@@ -6,6 +6,7 @@ package controlador;
 
 import controlador.factory.DAOFactory;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.logging.Level;
@@ -68,9 +69,9 @@ public class controladorPrincipal {
         //inicializa los objetos DAO
 
         producto = mySQLFactory.getProductoDAO();
-
         empleado = mySQLFactory.getEmpleadoDAO();
         cliente=mySQLFactory.getClienteDAO();
+        factura=mySQLFactory.getFacturaDAO();
 
     }
 
@@ -84,12 +85,9 @@ public class controladorPrincipal {
 
     public static void cargarcomboProducto() {
         Connection conn = null;
-
         try {
             conn = mySQLFactory.getConnection();
-
             producto.cargarcombo(conn, modelocomboProducto);
-
         } catch (SQLException ex1) {
             Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
         } catch (Exception ex) {
@@ -163,61 +161,107 @@ public class controladorPrincipal {
     
     public static void comprobarStock() {  
           Connection conn = null;          
-          boolean comp;          
-          Savepoint sp=null;         
-          if(modelotabla.getRowCount()==0){
-            JOptionPane.showMessageDialog(null, "No hay productos que facturar");
-            return;
-        }
+          int stock;          
+          Savepoint sp=null;   
+           Date sqlDate;
         try {
             conn = mySQLFactory.getConnection();
-           comp=producto.comprobarStock(conn, modelotabla); 
-           empleado.aumentaroperativa(conn,(Empleado)ventana.getCmbEmpleado().getSelectedItem());
+            empleado.aumentaroperativa(conn,(Empleado)ventana.getCmbEmpleado().getSelectedItem());
+            if(modelotabla.getRowCount()==0){
+            JOptionPane.showMessageDialog(null, "No hay productos que facturar");
+            return;
+            }
+            if(ventana.getTxtNumFactura().getText().isEmpty()||
+                       ventana.getTxtIdCliente().getText().isEmpty()||
+                       ventana.getDcFecha().getDate()==null){
+                JOptionPane.showMessageDialog(null, "Faltan datos de la factura");
+            return;
+            }
+           stock=producto.comprobarStock(conn, modelotabla);           
            sp=conn.setSavepoint();
            
             //
-          //realizar  factura y updates
+          //realizar  factura 
           //
-           if(comp){
+           if(stock!=0){
                System.out.println("stock suficiente");
-               producto.actualizarStock(conn, modelotabla);
+               producto.actualizarStock(conn, modelotabla, stock);
                empleado.incentivar(conn, Double.valueOf(ventana.getTxtTotal().getText()), (Empleado)ventana.getCmbEmpleado().getSelectedItem());
+               //////////
+               factura.generar(conn, ventana.getTxtNumFactura().getText(),
+                       ventana.getTxtIdCliente().getText(),
+                       (Empleado)ventana.getCmbEmpleado().getSelectedItem(),
+                       sqlDate= new Date(ventana.getDcFecha().getDate().getTime()),
+                       ventana.getCbCobrada().isSelected(),
+                       10.00);
            }else{  
                System.out.println("stock insuficiente");
            }
-        } catch (SQLException ex1) {
-              try {
-                  conn.rollback(sp);
-              } catch (SQLException ex) {
-                  Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-              }
-            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
-        } catch (Exception ex) {
-              try {
-                  conn.rollback(sp);
-              } catch (SQLException ex1) {
-                  Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
-              }
-            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+       } catch (SQLException ex) {
+            switch (ex.getErrorCode()) {
+                case 1062 -> {
+                    JOptionPane.showMessageDialog(null, "la factura ya existe, cambiar el nº de factura");
+                }
+                default -> {
+                }
+            }
+            try {
+                conn.rollback(sp);
+            } catch (SQLException ex1) {
+                Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }  catch (Exception ex2) {
+            try {
+                conn.rollback(sp);
+            } catch (SQLException ex) {
+                Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex2);
         } finally {
-              try {
-                  conn.commit();
-              } catch (SQLException ex) {
-                  Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-              }
             mySQLFactory.releaseConnection(conn);
-            
         }
         
          
          
-         
-     }
+        } 
+     
+    
 
     public static void mostrarCliente() {
         Connection conn=null;
         
         
+        
+        
+        
+    }
+
+    public static void facturar() {
+        Connection conn=null;
+        Date sqlDate;
+        try {
+            conn=mySQLFactory.getConnection();
+            
+            factura.generar(conn, ventana.getTxtNumFactura().getText(),
+                       ventana.getTxtIdCliente().getText(),
+                       (Empleado)ventana.getCmbEmpleado().getSelectedItem(),
+                       sqlDate= new Date(ventana.getDcFecha().getDate().getTime()),
+                       ventana.getCbCobrada().isSelected(),
+                       10.00);
+            
+            
+        } catch (Exception ex) {
+            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                conn.commit();
+            } catch (SQLException ex) {
+                Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            mySQLFactory.releaseConnection(conn);
+        }
+   
+         
         
         
         

@@ -108,19 +108,16 @@ public class ProductoDAO {
 
     }
 
-   
-
-    public boolean comprobarStock(Connection conn, DefaultTableModel modelotabla) throws SQLException {
+    public int comprobarStock(Connection conn, DefaultTableModel modelotabla) throws SQLException {
 
         //revisar para ver si interesa comprobar en cada insercion o al final
-        
         String consulta = "Select stock from productos where nomproducto like ?";
         PreparedStatement sentencia = conn.prepareStatement(consulta);
-        boolean comp = false;
+        int stock = 0;
         ResultSet rs;
         String nomproducto;
         int cantidadproducto;
-        int stock = 0;
+
         for (int i = 0; i < modelotabla.getRowCount(); i++) {
             nomproducto = String.valueOf(modelotabla.getValueAt(i, 0));
             cantidadproducto = (int) modelotabla.getValueAt(i, 1);
@@ -129,44 +126,39 @@ public class ProductoDAO {
             if (rs.next()) {
                 stock = rs.getInt(1);
                 if (cantidadproducto <= stock) {
-                    comp = true;
+                    return stock;
                 } else {
-                  return comp = false;
+                    return stock = 0;
                 }
             }
+
         }
-        return comp;
+        return stock;
     }
+
 //sin comprobar
-    public void actualizarStock(Connection conn, DefaultTableModel modelotabla) throws SQLException {
-         String consulta="UPDATE productos SET stock = ? WHERE nomproducto like ?";
-         PreparedStatement sentencia=conn.prepareStatement(consulta);
-         
-         //no comprobadpo
-         String select="Select stock from productos where nomproducto like ?";
-         PreparedStatement sentenciaselect=conn.prepareStatement(select);
-         ResultSet rs2;
-          String nomproducto;
-        int cantidadproducto;         
-         
-         for(int i=0;i<modelotabla.getRowCount();i++){
-             //(int)modelotabla.getValueAt(i, 1);
-             nomproducto=String.valueOf(modelotabla.getValueAt(i, 0));
-             cantidadproducto=(int)modelotabla.getValueAt(i, 1);
-             sentenciaselect.setString(1, nomproducto);
-             rs2=sentenciaselect.executeQuery();
-             if(rs2.next()){
-                 int stock=rs2.getInt(1);              
-                 sentencia.setInt(1,(stock-cantidadproducto) );                 
-                 sentencia.setString(2, nomproducto);
-                    sentencia.executeUpdate();
-                 
-                 
-             }
-             
-             
-         }
-         
-         
+    public void actualizarStock(Connection conn, DefaultTableModel modelotabla, int stock) throws SQLException {
+        String consulta = "UPDATE productos SET stock = ? WHERE nomproducto like ?";
+        PreparedStatement sentencia = conn.prepareStatement(consulta);
+
+        //no comprobadpo
+//         String select="Select stock from productos where nomproducto like ?";
+//         PreparedStatement sentenciaselect=conn.prepareStatement(select);
+//         ResultSet rs2;
+        String nomproducto;
+        int cantidadproducto;
+
+        for (int i = 0; i < modelotabla.getRowCount(); i++) {
+
+            nomproducto = String.valueOf(modelotabla.getValueAt(i, 0));
+            cantidadproducto = (int) modelotabla.getValueAt(i, 1);
+            sentencia.setInt(1, (stock - cantidadproducto));
+            sentencia.setString(2, nomproducto);
+            sentencia.executeUpdate();
+
+        }
+
     }
+
 }
+

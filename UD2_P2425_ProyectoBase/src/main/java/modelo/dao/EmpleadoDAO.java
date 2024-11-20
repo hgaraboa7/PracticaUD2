@@ -18,7 +18,8 @@ import modelo.vo.Empleado;
  */
 public class EmpleadoDAO {
 
-    public void cargarcombo(Connection conn, DefaultComboBoxModel modelocomboEmpleado) throws SQLException {        
+    public void cargarcombo(Connection conn, DefaultComboBoxModel modelocomboEmpleado) throws SQLException {       
+        modelocomboEmpleado.removeAllElements();
         String consulta="select * from empleado";        
         Statement sentencia=conn.createStatement();
         ResultSet rs=sentencia.executeQuery(consulta);        
@@ -28,15 +29,15 @@ public class EmpleadoDAO {
       }
 //sin comprobnar
     public void incentivar(Connection conn, Double precio, Empleado emp) throws SQLException {
-        String consulta="update empleados set incentivo=? where idempleado like ? ";
+        String consulta="update empleado set incentivo=? where idempleado like ? ";
         PreparedStatement sentencia=conn.prepareStatement(consulta);
-        sentencia.setDouble(1, (precio*0.01));
+        sentencia.setDouble(1, (emp.getIncentivo()+precio*0.01));
         sentencia.setString(2, emp.getIdempleado());
         sentencia.executeUpdate();
     }
-//sin comprobnar
+
     public void aumentaroperativa(Connection conn, Empleado emp) throws SQLException {
-        String consulta="update empleados set operativas=? where idempleado like ?";
+        String consulta="update empleado set operativas=? where idempleado like ?";
         PreparedStatement sentencia=conn.prepareStatement(consulta);
         sentencia.setInt(1, emp.getOperativas()+1);
         sentencia.setString(2, emp.getIdempleado());

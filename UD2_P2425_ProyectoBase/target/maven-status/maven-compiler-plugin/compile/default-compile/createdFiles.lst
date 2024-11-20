@@ -2,6 +2,7 @@ vista\Principal$6.class
 UD2_P2425_ProyectoBase.class
 modelo\dao\ProductoDAO.class
 vista\Principal.class
+modelo\vo\Factura.class
 vista\Principal$1.class
 controlador\pool\BasicConnectionPool.class
 modelo\dao\EmpleadoDAO.class

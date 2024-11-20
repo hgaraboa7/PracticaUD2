@@ -3,6 +3,7 @@ package controlador.factory;
 import java.sql.Connection;
 import modelo.dao.ClienteDAO;
 import modelo.dao.EmpleadoDAO;
+import modelo.dao.FacturaDAO;
 import modelo.dao.ProductoDAO;
 
 
@@ -36,5 +37,6 @@ public abstract class DAOFactory {
         public abstract ProductoDAO getProductoDAO();        
         public abstract EmpleadoDAO getEmpleadoDAO();
         public abstract ClienteDAO getClienteDAO();
+        public abstract FacturaDAO getFacturaDAO();
       
 }

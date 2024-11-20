@@ -180,11 +180,9 @@ public class controladorPrincipal {
            stock=producto.comprobarStock(conn, modelotabla);           
            sp=conn.setSavepoint();
            
-            //
-          //realizar  factura 
-          //
-           if(stock!=0){
-               System.out.println("stock suficiente");
+            
+           if(( stock=producto.comprobarStock(conn, modelotabla))!=0){
+              
                producto.actualizarStock(conn, modelotabla, stock);
                empleado.incentivar(conn, Double.valueOf(ventana.getTxtTotal().getText()), (Empleado)ventana.getCmbEmpleado().getSelectedItem());
                //////////
@@ -194,8 +192,9 @@ public class controladorPrincipal {
                        sqlDate= new Date(ventana.getDcFecha().getDate().getTime()),
                        ventana.getCbCobrada().isSelected(),
                        10.00);
+                JOptionPane.showMessageDialog(null,"stock suficiente, factura realizada");
            }else{  
-               System.out.println("stock insuficiente");
+               JOptionPane.showMessageDialog(null,"stock insuficiente");
            }
        } catch (SQLException ex) {
             switch (ex.getErrorCode()) {
@@ -236,35 +235,12 @@ public class controladorPrincipal {
         
     }
 
-    public static void facturar() {
-        Connection conn=null;
-        Date sqlDate;
-        try {
-            conn=mySQLFactory.getConnection();
-            
-            factura.generar(conn, ventana.getTxtNumFactura().getText(),
-                       ventana.getTxtIdCliente().getText(),
-                       (Empleado)ventana.getCmbEmpleado().getSelectedItem(),
-                       sqlDate= new Date(ventana.getDcFecha().getDate().getTime()),
-                       ventana.getCbCobrada().isSelected(),
-                       10.00);
-            
-            
-        } catch (Exception ex) {
-            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            try {
-                conn.commit();
-            } catch (SQLException ex) {
-                Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            mySQLFactory.releaseConnection(conn);
-        }
+    
    
          
         
         
         
-    }
+    
     
 }

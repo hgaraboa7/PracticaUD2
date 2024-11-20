@@ -284,7 +284,7 @@ public class Principal extends javax.swing.JFrame {
         
         controladorPrincipal.comprobarStock();
         controladorPrincipal.cargarcomboEmpleado();
-        //controladorPrincipal.facturar();
+       
         
       //  controladorPrincipal.
         

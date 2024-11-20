@@ -108,10 +108,7 @@ public class ProductoDAO {
 
     }
 
-    public void añadirproducto(Connection conn, DefaultTableModel modelotabla, String nombreProducto, int cantidad) {
-
-        //con transaccion y stcok
-    }
+   
 
     public boolean comprobarStock(Connection conn, DefaultTableModel modelotabla) throws SQLException {
 
@@ -134,19 +131,40 @@ public class ProductoDAO {
                 if (cantidadproducto <= stock) {
                     comp = true;
                 } else {
-                    comp = false;
+                  return comp = false;
                 }
             }
         }
         return comp;
     }
-
+//sin comprobar
     public void actualizarStock(Connection conn, DefaultTableModel modelotabla) throws SQLException {
-         String consulta="UPDATE productos SET stock = ? WHERE nomproductos like ?";
+         String consulta="UPDATE productos SET stock = ? WHERE nomproducto like ?";
          PreparedStatement sentencia=conn.prepareStatement(consulta);
-         ResultSet rs;
+         
+         //no comprobadpo
+         String select="Select stock from productos where nomproducto like ?";
+         PreparedStatement sentenciaselect=conn.prepareStatement(select);
+         ResultSet rs2;
+          String nomproducto;
+        int cantidadproducto;         
+         
          for(int i=0;i<modelotabla.getRowCount();i++){
-             sentencia.setInt(1, (int)modelotabla.getValueAt(i, 1));
+             //(int)modelotabla.getValueAt(i, 1);
+             nomproducto=String.valueOf(modelotabla.getValueAt(i, 0));
+             cantidadproducto=(int)modelotabla.getValueAt(i, 1);
+             sentenciaselect.setString(1, nomproducto);
+             rs2=sentenciaselect.executeQuery();
+             if(rs2.next()){
+                 int stock=rs2.getInt(1);              
+                 sentencia.setInt(1,(stock-cantidadproducto) );                 
+                 sentencia.setString(2, nomproducto);
+                    sentencia.executeUpdate();
+                 
+                 
+             }
+             
+             
          }
          
          

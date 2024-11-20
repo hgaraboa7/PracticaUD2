@@ -5,6 +5,7 @@
 package modelo.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,21 +18,31 @@ import modelo.vo.Empleado;
  */
 public class EmpleadoDAO {
 
-    public void cargarcombo(Connection conn, DefaultComboBoxModel modelocomboEmpleado) throws SQLException {
-        
-        String consulta="select * from empleado";
-        
+    public void cargarcombo(Connection conn, DefaultComboBoxModel modelocomboEmpleado) throws SQLException {        
+        String consulta="select * from empleado";        
         Statement sentencia=conn.createStatement();
-        
-        ResultSet rs=sentencia.executeQuery(consulta);
-        
-        while(rs.next()){
-            
+        ResultSet rs=sentencia.executeQuery(consulta);        
+        while(rs.next()){            
             modelocomboEmpleado.addElement(new Empleado(rs.getString(1), rs.getString(2), rs.getDouble(3), rs.getDouble(4), rs.getInt(5)));
-            
-        }
-        
-            
+        }            
       }
+//sin comprobnar
+    public void incentivar(Connection conn, Double precio, Empleado emp) throws SQLException {
+        String consulta="update empleados set incentivo=? where idempleado like ? ";
+        PreparedStatement sentencia=conn.prepareStatement(consulta);
+        sentencia.setDouble(1, (precio*0.01));
+        sentencia.setString(2, emp.getIdempleado());
+        sentencia.executeUpdate();
+    }
+//sin comprobnar
+    public void aumentaroperativa(Connection conn, Empleado emp) throws SQLException {
+        String consulta="update empleados set operativas=? where idempleado like ?";
+        PreparedStatement sentencia=conn.prepareStatement(consulta);
+        sentencia.setInt(1, emp.getOperativas()+1);
+        sentencia.setString(2, emp.getIdempleado());
+        sentencia.executeUpdate();
+        
+        
+    }
     
 }

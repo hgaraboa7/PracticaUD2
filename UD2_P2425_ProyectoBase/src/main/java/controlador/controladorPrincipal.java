@@ -7,14 +7,17 @@ package controlador;
 import controlador.factory.DAOFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import modelo.dao.ClienteDAO;
 import modelo.dao.EmpleadoDAO;
 import modelo.dao.FacturaDAO;
 import modelo.dao.ProductoDAO;
+import modelo.vo.Empleado;
 import modelo.vo.Producto;
 import vista.Principal;
 
@@ -40,6 +43,8 @@ public class controladorPrincipal {
     static EmpleadoDAO empleado;
 
     static FacturaDAO factura;
+    
+    static ClienteDAO cliente;
 
    
    
@@ -65,6 +70,7 @@ public class controladorPrincipal {
         producto = mySQLFactory.getProductoDAO();
 
         empleado = mySQLFactory.getEmpleadoDAO();
+        cliente=mySQLFactory.getClienteDAO();
 
     }
 
@@ -117,7 +123,7 @@ public class controladorPrincipal {
     public static void listaañadirproducto() {
         
         if((int) ventana.getSpCantidad().getValue()==0){
-            JOptionPane.showMessageDialog(null, "Faltan datos");
+            JOptionPane.showMessageDialog(null, "la cantidad debe ser superior a 0");
             return;
         }
 
@@ -131,7 +137,7 @@ public class controladorPrincipal {
 
     public static void listaretirarproducto() {
          if((int) ventana.getSpCantidad().getValue()==0){
-            JOptionPane.showMessageDialog(null, "Faltan datos");
+          //  JOptionPane.showMessageDialog(null, "Faltan datos");
             return;
         }
          
@@ -153,68 +159,68 @@ public class controladorPrincipal {
         
     }
 
-    public static void añadirProductoStock() {
-         Connection conn = null;
-         
-          if((int) ventana.getSpCantidad().getValue()==0){
-            JOptionPane.showMessageDialog(null, "Faltan datos");
-            return;
-        }
-
-        try {
-            conn = mySQLFactory.getConnection();
-
-            producto.añadirproducto(conn, modelotabla, String.valueOf(ventana.getCmbProducto().getSelectedItem()), (int) ventana.getSpCantidad().getValue() );
-
-        } catch (SQLException ex1) {
-            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
-        } catch (Exception ex) {
-            Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            mySQLFactory.releaseConnection(conn);
-        }
-        
-        
- 
-    }
     
-     public static void comprobarStock() {
-  
-          Connection conn = null;
-          
-          boolean comp;
-         
+    
+    public static void comprobarStock() {  
+          Connection conn = null;          
+          boolean comp;          
+          Savepoint sp=null;         
           if(modelotabla.getRowCount()==0){
             JOptionPane.showMessageDialog(null, "No hay productos que facturar");
             return;
         }
-
         try {
             conn = mySQLFactory.getConnection();
-
-           comp=producto.comprobarStock(conn, modelotabla);
-           
+           comp=producto.comprobarStock(conn, modelotabla); 
+           empleado.aumentaroperativa(conn,(Empleado)ventana.getCmbEmpleado().getSelectedItem());
+           sp=conn.setSavepoint();
            
             //
           //realizar  factura y updates
           //
            if(comp){
-               System.out.println("funciona suficiente");
+               System.out.println("stock suficiente");
+               producto.actualizarStock(conn, modelotabla);
+               empleado.incentivar(conn, Double.valueOf(ventana.getTxtTotal().getText()), (Empleado)ventana.getCmbEmpleado().getSelectedItem());
            }else{  
-               System.out.println("funciona insuficiente");
+               System.out.println("stock insuficiente");
            }
-
         } catch (SQLException ex1) {
+              try {
+                  conn.rollback(sp);
+              } catch (SQLException ex) {
+                  Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+              }
             Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
         } catch (Exception ex) {
+              try {
+                  conn.rollback(sp);
+              } catch (SQLException ex1) {
+                  Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex1);
+              }
             Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
+              try {
+                  conn.commit();
+              } catch (SQLException ex) {
+                  Logger.getLogger(controladorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+              }
             mySQLFactory.releaseConnection(conn);
+            
         }
         
          
          
          
      }
+
+    public static void mostrarCliente() {
+        Connection conn=null;
+        
+        
+        
+        
+        
+    }
     
 }

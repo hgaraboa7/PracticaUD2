@@ -1,3 +1,4 @@
+vista\Principal$6.class
 UD2_P2425_ProyectoBase.class
 modelo\dao\ProductoDAO.class
 vista\Principal.class
@@ -8,6 +9,7 @@ vista\Principal$5.class
 modelo\vo\Producto.class
 vista\Principal$3.class
 controlador\factory\MySQLDAOFactory.class
+modelo\dao\ClienteDAO.class
 modelo\dao\Dao.class
 vista\Principal$2.class
 vista\Principal$4.class
@@ -16,3 +18,4 @@ controlador\factory\DAOFactory.class
 controlador\pool\ConnectionPool.class
 controlador\controladorPrincipal.class
 modelo\dao\FacturaDAO.class
+vista\Principal$7.class

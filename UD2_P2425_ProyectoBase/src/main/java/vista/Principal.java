@@ -89,6 +89,11 @@ public class Principal extends javax.swing.JFrame {
         jLabel2.setText("Cliente");
 
         txtIdCliente.setText("C99");
+        txtIdCliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtIdClienteFocusLost(evt);
+            }
+        });
         txtIdCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIdClienteActionPerformed(evt);
@@ -277,13 +282,20 @@ public class Principal extends javax.swing.JFrame {
     private void btnFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturarActionPerformed
         
         controladorPrincipal.comprobarStock();
-        
+      //  controladorPrincipal.
         
     }//GEN-LAST:event_btnFacturarActionPerformed
 
     private void txtIdClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdClienteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtIdClienteActionPerformed
+
+    private void txtIdClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtIdClienteFocusLost
+        controladorPrincipal.mostrarCliente();
+        
+        
+        
+    }//GEN-LAST:event_txtIdClienteFocusLost
 
     /**
      * @param args the command line arguments

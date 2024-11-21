@@ -9,6 +9,6 @@
 public class UD2_P2425_ProyectoBase {
 
     public static void main(String[] args) {
-      controlador.controladorPrincipal.iniciar();
+      controlador.controlador1_1.iniciar();
     }
 }
